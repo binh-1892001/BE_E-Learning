@@ -16,10 +16,10 @@ public class JwtProvider {
     @Value("abxbxx")
     private String SECRET_KEY;
 
-    @Value("3000000000")
+    @Value("604800016")
     private Long EXPIRED;
 
-    @Value("1111111")
+    @Value("604800016")
     private Long REFRESH_EXPIRED;
 
     public String generateToken(UserPrincipal userPrincipal) {

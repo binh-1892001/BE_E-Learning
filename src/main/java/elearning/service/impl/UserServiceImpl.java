@@ -2,6 +2,7 @@ package elearning.service.impl;
 
 import elearning.dto.request.UserLogin;
 import elearning.dto.response.JwtResponse;
+import elearning.exception.CustomException;
 import elearning.exception.LoginException;
 import elearning.model.Users;
 import elearning.repository.IUserRepository;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements IUserService {
-    @Value("${jwt.expired}")
+    @Value("604800016")
     private Long EXPIRED;
 
     private final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
@@ -83,12 +84,12 @@ public class UserServiceImpl implements IUserService {
 //    }
 
     @Override
-    public JwtResponse login(UserLogin userLogin) {
+    public JwtResponse login(UserLogin userLogin) throws CustomException {
         Authentication authentication;
         try {
             authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
         } catch (AuthenticationException e) {
-            throw new LoginException("Username or Password is incorrect 11312321");
+            throw new CustomException("Username or Password is incorrect 11312321");
         }
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 

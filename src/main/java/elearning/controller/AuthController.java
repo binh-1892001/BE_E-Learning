@@ -2,6 +2,7 @@ package elearning.controller;
 
 import elearning.dto.request.UserLogin;
 import elearning.dto.response.JwtResponse;
+import elearning.exception.CustomException;
 import elearning.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class AuthController {
     private IUserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> handleLogin(@RequestBody UserLogin userLogin) {
+    public ResponseEntity<JwtResponse> handleLogin(@RequestBody UserLogin userLogin) throws CustomException {
         return new ResponseEntity<>(userService.login(userLogin), HttpStatus.OK);
     }
 
