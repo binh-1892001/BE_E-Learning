@@ -18,10 +18,6 @@ public class UserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users users = IUserRepository.findUsersByUsername(username).orElseThrow(() -> new RuntimeException("username not found"));
-        Roles roles= new Roles();
-        roles.setRoleName(RoleName.ROLE_ADMIN);
-        System.out.println(users.getRoles());
-        users.getRoles().add(roles);
         return new UserPrincipal(users);
     }
 }
