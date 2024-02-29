@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 public class BaseObjectDto extends AuditableEntityDto{
     protected Long id;
-    protected boolean voided;
 
     public BaseObjectDto() {
     }
@@ -16,9 +15,6 @@ public class BaseObjectDto extends AuditableEntityDto{
         super(entity);
         if (entity != null) {
             this.id = entity.getId();
-            if (entity.getVoided() != null) {
-                this.voided = entity.getVoided();
-            }
         }
 
     }
