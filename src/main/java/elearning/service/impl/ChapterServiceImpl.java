@@ -71,17 +71,17 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public ChapterDto getChapterDtoById(Long id) {
+    public ChapterDto getChapterDtoById(Long id) throws CustomException {
         return new ChapterDto(this.getChapterById(id));
     }
 
 
-    private Chapter getChapterById(Long id) {
+    private Chapter getChapterById(Long id) throws CustomException {
         Optional<Chapter> optional = chapterRepository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-        return null;
+        throw new CustomException("Chapter not found");
     }
 
     @Override

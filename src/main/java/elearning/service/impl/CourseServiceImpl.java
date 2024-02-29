@@ -1,6 +1,7 @@
 package elearning.service.impl;
 
 import elearning.dto.CourseDto;
+import elearning.exception.CustomException;
 import elearning.model.Course;
 import elearning.repository.CourseRepository;
 import elearning.service.CourseService;
@@ -93,16 +94,16 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDto getCourseDtoById(Long id) {
+    public CourseDto getCourseDtoById(Long id) throws CustomException {
         return new CourseDto(this.getCourseById(id));
     }
 
-    private Course getCourseById(Long id) {
+    private Course getCourseById(Long id) throws CustomException {
         Optional<Course> optional = courseRepository.findById(id);
         if (optional.isPresent()) {
             return optional.get();
         }
-        return null;
+        throw new CustomException("Course not found");
     }
 
     @Override

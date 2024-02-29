@@ -1,6 +1,7 @@
 package elearning.service;
 
 import elearning.dto.CourseDto;
+import elearning.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +16,7 @@ public interface CourseService {
 
     List<CourseDto> getAllCourse();
 
-    CourseDto getCourseDtoById(Long id);
+    CourseDto getCourseDtoById(Long id) throws CustomException;
 
     Page<CourseDto> pagingCourseDto(Pageable pageable, String title);
 
