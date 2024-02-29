@@ -1,10 +1,7 @@
 package elearning.model;
 
 import elearning.model.base.BaseObject;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Set;
@@ -21,14 +18,14 @@ public class Users extends BaseObject {
 	private String phone;
 	private String password;
 	private Boolean isActive;
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER )
 	@JoinTable(
 			  name = "user_role",
 			  joinColumns = @JoinColumn(name = "user_id"),
 			  inverseJoinColumns = @JoinColumn(name = "role_id")
 	)
 	private Set<Roles> roles;
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER )
 	@JoinTable(
 			  name = "wish_list",
 			  joinColumns = @JoinColumn(name = "user_id"),
