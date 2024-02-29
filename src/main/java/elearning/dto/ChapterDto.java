@@ -22,9 +22,6 @@ public class ChapterDto extends BaseObjectDto {
         if(entity.getCourse() != null){
             this.course = new CourseDto(entity.getCourse());
         }
-        if (entity.getVoided() != null) {
-            this.voided = entity.getVoided();
-        }
     }
 
     public ChapterDto(Chapter entity, Boolean isGetFull) {
@@ -33,9 +30,6 @@ public class ChapterDto extends BaseObjectDto {
         this.description = entity.getDescription();
         if(entity.getCourse() != null){
             this.course = new CourseDto(entity.getCourse());
-        }
-        if (entity.getVoided() != null) {
-            this.voided = entity.getVoided();
         }
 
         if (isGetFull) {
