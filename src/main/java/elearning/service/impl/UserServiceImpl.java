@@ -168,16 +168,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void editInfoUser(EditUserRequest editUserRequest) {
-        UserPrincipal userPrincipal = (UserPrincipal) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
-        Users users = userRepository.findUsersByUsername(userPrincipal.getUsername()).orElseThrow(()-> new RuntimeException("User not found"));
+        Users users = this.getCurrentUser();
         BeanUtils.copyProperties(editUserRequest, users);
         userRepository.save(users);
     }
 
     @Override
     public void changePassword(ChangePasswordRequest passwordRequest) throws CustomException {
-        UserPrincipal userPrincipal = (UserPrincipal) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
-        Users users = userRepository.findUsersByUsername(userPrincipal.getUsername()).orElseThrow(()-> new RuntimeException("User not found"));
+        Users users = this.getCurrentUser();
         if(!passwordEncoder.matches(passwordRequest.getOldPassword(), users.getPassword())){
             throw new CustomException("Wrong password");
         }
@@ -217,6 +215,12 @@ public class UserServiceImpl implements IUserService {
     public Page<UserReponse> findAll(String name, String phone, Pageable pageable) {
         Page<Users> users = userRepository.findUsersByFullNameAndPhone(name, phone,pageable);
         return users.map(UserReponse::new);
+    }
+
+    @Override
+    public Users getCurrentUser() {
+        UserPrincipal userPrincipal = (UserPrincipal) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
+        return userRepository.findUsersByUsername(userPrincipal.getUsername()).orElseThrow(()-> new RuntimeException("User not found"));
     }
 
 //    @Override

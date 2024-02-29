@@ -34,4 +34,6 @@ public interface IUserService {
 
     Page<UserReponse> findAll(String name, String phone, Pageable pageable);
 
+    Users getCurrentUser();
+
 }
