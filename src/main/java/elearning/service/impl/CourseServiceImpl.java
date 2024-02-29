@@ -1,7 +1,6 @@
 package elearning.service.impl;
 
 import elearning.dto.CourseDto;
-import elearning.dto.search.CourseSearchDto;
 import elearning.model.Course;
 import elearning.repository.CourseRepository;
 import elearning.service.CourseService;
@@ -84,10 +83,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void markDeleteCourse(Long id) {
-        Course course = courseRepository.findById(id).orElse(null);
-        course.setVoided(true);
-        courseRepository.save(course);
+    public void deleteCourse(Long id) {
+        courseRepository.deleteById(id);
     }
 
     @Override
@@ -109,54 +106,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<CourseDto> pagingCourseDto(CourseSearchDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        int pageIndex = dto.getPageIndex() != null ? dto.getPageIndex() : 0;
-        int pageSize = dto.getPageSize() != null ? dto.getPageSize() : 10;
-        pageIndex = pageIndex > 0 ? pageIndex - 1 : 0;
-        String whereClause = buildWhereQueryPagingCourse(dto);
-        String sql = "select new elearning.dto.CourseDto(entity, false) from Course as entity ";
-        String sqlCount = "select count(entity.id) from Course as entity ";
-        String orderBy = " order by entity.createDate ASC";
-
-        sql += whereClause + orderBy;
-        sqlCount += whereClause;
-
-        Query q = manager.createQuery(sql, CourseDto.class);
-        Query qCount = manager.createQuery(sqlCount);
-
-        setParametersPagingCourse(dto, q, qCount);
-
-        int startPosition = pageIndex * pageSize;
-        q.setFirstResult(startPosition);
-        q.setMaxResults(pageSize);
-
-        List<CourseDto> entities = q.getResultList();
-        if (entities == null || entities.size() == 0) {
-            return null;
-        }
-        long count = (long) qCount.getSingleResult();
-        Pageable pageable = PageRequest.of(pageIndex, pageSize);
-        return new PageImpl<>(entities, pageable, count);
+    public Page<CourseDto> pagingCourseDto(Pageable pageable, String title) {
+        Page<CourseDto> page = courseRepository.getCoursePage(pageable, title);
+        return page;
     }
 
-    private static String buildWhereQueryPagingCourse(CourseSearchDto dto) {
-        String whereClause = dto.getIsVoided() != null && dto.getIsVoided() ?
-                "where (1=1) AND (entity.voided = 1 ) " : "where (1=1) AND (entity.voided is null OR entity.voided = 0 ) ";
-
-        if (dto.getKeyword() != null && StringUtils.hasText(dto.getKeyword())) {
-            whereClause += "AND ( entity.title LIKE :text ) ";
-        }
-
-        return whereClause;
-    }
-
-    private static void setParametersPagingCourse(CourseSearchDto dto, Query q, Query qCount) {
-        if (dto.getKeyword() != null && StringUtils.hasText(dto.getKeyword())) {
-            q.setParameter("text", '%' + dto.getKeyword().trim() + '%');
-            qCount.setParameter("text", '%' + dto.getKeyword().trim() + '%');
-        }
-    }
 }

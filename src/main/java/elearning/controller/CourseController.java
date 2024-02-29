@@ -1,10 +1,12 @@
 package elearning.controller;
 
 import elearning.dto.CourseDto;
-import elearning.dto.search.CourseSearchDto;
 import elearning.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,19 +28,20 @@ public class CourseController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
-        courseService.markDeleteCourse(id);
+        courseService.deleteCourse(id);
     }
 
     @GetMapping("/get-all")
-    public List<CourseDto> getAll() {
+    public ResponseEntity<List<CourseDto>> getAll() {
         List<CourseDto> ret = courseService.getAllCourse();
-        return ret;
+        return ResponseEntity.ok(ret);
     }
 
-    @PostMapping("/paging")
-    public Page<CourseDto> paging(@RequestBody CourseSearchDto searchDto) {
-        Page<CourseDto> ret = courseService.pagingCourseDto(searchDto);
-        return ret;
+    @GetMapping("/paging")
+    public ResponseEntity<Page<CourseDto>> paging(@PageableDefault(page = 0, size = 2, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            , @RequestParam(required = false) String title) {
+        Page<CourseDto> ret = courseService.pagingCourseDto(pageable, title);
+        return ResponseEntity.ok(ret);
     }
 
     @GetMapping("/{id}")
