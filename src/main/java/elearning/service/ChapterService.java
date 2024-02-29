@@ -15,7 +15,7 @@ public interface ChapterService {
 
     List<ChapterDto> getAllChapter();
 
-    ChapterDto getChapterDtoById(Long id);
+    ChapterDto getChapterDtoById(Long id) throws CustomException;
 
     Page<ChapterDto> pagingChapterDto(Pageable pageable, String title);
 

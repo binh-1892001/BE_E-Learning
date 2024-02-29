@@ -1,6 +1,7 @@
 package elearning.controller;
 
 import elearning.dto.CourseDto;
+import elearning.exception.CustomException;
 import elearning.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDto> get(@PathVariable("id") Long id) {
+    public ResponseEntity<CourseDto> get(@PathVariable("id") Long id) throws CustomException {
         CourseDto ret = courseService.getCourseDtoById(id);
         return ResponseEntity.ok(ret);
     }

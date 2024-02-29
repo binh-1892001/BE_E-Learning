@@ -45,7 +45,7 @@ public class ChapterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ChapterDto> get(@PathVariable("id") Long id) {
+    public ResponseEntity<ChapterDto> get(@PathVariable("id") Long id) throws CustomException {
         ChapterDto ret = chapterService.getChapterDtoById(id);
         return ResponseEntity.ok(ret);
     }
