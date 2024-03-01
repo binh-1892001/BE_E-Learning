@@ -17,7 +17,7 @@ public class Users extends BaseObject {
 	private String fullName;
 	private String phone;
 	private String password;
-	private Boolean isActive;
+	private Boolean isActive = true;
 	@ManyToMany(fetch = FetchType.EAGER )
 	@JoinTable(
 			  name = "user_role",
