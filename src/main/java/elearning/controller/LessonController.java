@@ -1,8 +1,8 @@
 package elearning.controller;
 
-import elearning.dto.ChapterDto;
+import elearning.dto.LessonDto;
 import elearning.exception.CustomException;
-import elearning.service.ChapterService;
+import elearning.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,40 +13,40 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/api/v1/chapter")
+@RequestMapping("/api/v1/lesson")
 @RestController
-public class ChapterController {
+public class LessonController {
 
     @Autowired
-    private ChapterService chapterService;
+    private LessonService lessonService;
 
     @PostMapping("/save")
-    public ResponseEntity<ChapterDto> saveOrUpdate(@RequestBody ChapterDto request) throws CustomException {
-        ChapterDto ret = chapterService.saveChapter(request);
+    public ResponseEntity<LessonDto> saveOrUpdate(@RequestBody LessonDto request) throws CustomException {
+        LessonDto ret = lessonService.saveLesson(request);
         return ResponseEntity.ok(ret);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
-        chapterService.deleteChapter(id);
+        lessonService.deleteLesson(id);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<ChapterDto>> getAll() {
-        List<ChapterDto> ret = chapterService.getAllChapter();
+    public ResponseEntity<List<LessonDto>> getAll() {
+        List<LessonDto> ret = lessonService.getAllLesson();
         return ResponseEntity.ok(ret);
     }
 
     @GetMapping("/paging")
-    public ResponseEntity<Page<ChapterDto>> paging(@PageableDefault(page = 0, size = 2) Pageable pageable
+    public ResponseEntity<Page<LessonDto>> paging(@PageableDefault(page = 0, size = 2) Pageable pageable
             , @RequestParam(required = false) String title) {
-        Page<ChapterDto> ret = chapterService.pagingChapterDto(pageable, title);
+        Page<LessonDto> ret = lessonService.pagingLessonDto(pageable, title);
         return ResponseEntity.ok(ret);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ChapterDto> get(@PathVariable("id") Long id) throws CustomException {
-        ChapterDto ret = chapterService.getChapterDtoById(id);
+    public ResponseEntity<LessonDto> get(@PathVariable("id") Long id) throws CustomException {
+        LessonDto ret = lessonService.getLessonDtoById(id);
         return ResponseEntity.ok(ret);
     }
 

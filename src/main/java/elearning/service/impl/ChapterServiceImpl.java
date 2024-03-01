@@ -1,23 +1,17 @@
 package elearning.service.impl;
 
 import elearning.dto.ChapterDto;
-import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
 import elearning.model.Chapter;
 import elearning.model.Course;
 import elearning.repository.ChapterRepository;
 import elearning.repository.CourseRepository;
 import elearning.service.ChapterService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +23,6 @@ public class ChapterServiceImpl implements ChapterService {
     ChapterRepository chapterRepository;
     @Autowired
     CourseRepository courseRepository;
-
-    @PersistenceContext
-    public EntityManager manager;
-
 
     @Override
     public ChapterDto saveChapter(ChapterDto dto) throws CustomException {
