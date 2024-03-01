@@ -1,32 +1,39 @@
 package elearning.service.impl;
 
+import elearning.constant.RoleName;
+import elearning.dto.request.ChangePasswordRequest;
+import elearning.dto.request.EditUserRequest;
 import elearning.dto.request.UserLogin;
+import elearning.dto.request.UserInfoRequest;
 import elearning.dto.response.JwtResponse;
+import elearning.dto.response.UserReponse;
 import elearning.exception.CustomException;
-import elearning.exception.LoginException;
+import elearning.model.Roles;
 import elearning.model.Users;
 import elearning.repository.IUserRepository;
 import elearning.security.jwt.JwtProvider;
-import elearning.security.jwt.JwtTokenFilter;
-import elearning.security.user_principal.UserDetailService;
 import elearning.security.user_principal.UserPrincipal;
 import elearning.service.IRoleService;
 import elearning.service.IUserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,10 +53,6 @@ public class UserServiceImpl implements IUserService {
     private AuthenticationProvider authenticationProvider;
     @Autowired
     private JwtProvider jwtProvider;
-    @Autowired
-    private JwtTokenFilter jwtTokenFilter;
-    @Autowired
-    private UserDetailService userDetailService;
 
 //    @Override
 //    public void register(UserRegister userRegister) {
@@ -82,6 +85,41 @@ public class UserServiceImpl implements IUserService {
 //                .roles(roles)
 //                .build());
 //    }
+
+
+    /*Đăng ký dối với người dùng*/
+    @Override
+    public void registerSubAdmin(UserInfoRequest request) throws CustomException {
+        if(userRepository.existsByUsername(request.getUsername())){
+            throw new CustomException("Username is registed");
+        }
+        setInfoUser(request,Set.of(RoleName.ROLE_SUBADMIN), new Users());
+    }
+
+
+    @Override
+    public void registerUser(UserInfoRequest userInfoRequest) throws CustomException {
+        if(userRepository.existsByUsername(userInfoRequest.getUsername())){
+            throw new CustomException("Username is registed");
+        }
+        setInfoUser(userInfoRequest, Set.of(RoleName.ROLE_USER),new Users());
+    }
+
+    private void setInfoUser(UserInfoRequest userInfoRequest, Set<RoleName> roleNames, Users users) throws CustomException {
+        BeanUtils.copyProperties(userInfoRequest, users);
+        users.setPassword(passwordEncoder.encode(userInfoRequest.getPassword()));
+        if(roleNames !=null && !roleNames.isEmpty()){
+            Set<Roles> roles = new HashSet<>();
+            roleNames.forEach(e->{
+                Roles roles1 = roleService.findByRoleName(e);
+                roles.add(roles1);
+            });
+            users.setRoles(roles);
+        }
+        userRepository.save(users);
+    }
+
+
 
     @Override
     public JwtResponse login(UserLogin userLogin) throws CustomException {
@@ -126,6 +164,63 @@ public class UserServiceImpl implements IUserService {
     @Override
     public String handleLogout(Authentication authentication) {
         return null;
+    }
+
+    @Override
+    public void editInfoUser(EditUserRequest editUserRequest) {
+        Users users = this.getCurrentUser();
+        BeanUtils.copyProperties(editUserRequest, users);
+        userRepository.save(users);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest passwordRequest) throws CustomException {
+        Users users = this.getCurrentUser();
+        if(!passwordEncoder.matches(passwordRequest.getOldPassword(), users.getPassword())){
+            throw new CustomException("Wrong password");
+        }
+        users.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+        userRepository.save(users);
+    }
+
+    /**
+     *
+     * @param editUserRequest
+     * @param id
+     */
+
+    /*Admin*/
+    @Override
+    public void editUser(EditUserRequest editUserRequest, Long id) throws CustomException {
+        Users users = userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
+        BeanUtils.copyProperties(editUserRequest,users);
+        if (editUserRequest.getRole() != null && !editUserRequest.getRole().isEmpty()) {
+            Set<Roles> roles = new HashSet<>();
+            editUserRequest.getRole().forEach(e -> {
+                switch (e) {
+                    case "admin":
+                        roles.add(roleService.findByRoleName(RoleName.ROLE_ADMIN));
+                    case "subadmin":
+                        roles.add(roleService.findByRoleName(RoleName.ROLE_SUBADMIN));
+                    case "user":
+                        roles.add(roleService.findByRoleName(RoleName.ROLE_USER));
+                }
+            });
+            users.setRoles(roles);
+        }
+        userRepository.save(users);
+    }
+
+    @Override
+    public Page<UserReponse> findAll(String name, String phone, Pageable pageable) {
+        Page<Users> users = userRepository.findUsersByFullNameAndPhone(name, phone,pageable);
+        return users.map(UserReponse::new);
+    }
+
+    @Override
+    public Users getCurrentUser() {
+        UserPrincipal userPrincipal = (UserPrincipal) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
+        return userRepository.findUsersByUsername(userPrincipal.getUsername()).orElseThrow(()-> new RuntimeException("User not found"));
     }
 
 //    @Override
