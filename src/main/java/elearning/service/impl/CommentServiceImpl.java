@@ -11,6 +11,7 @@ import elearning.repository.LessonRepository;
 import elearning.repository.UserRepository;
 import elearning.security.user_principal.UserPrincipal;
 import elearning.service.CommentService;
+import elearning.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,8 @@ public class CommentServiceImpl implements CommentService {
     IUserRepository userRepository;
     @Autowired
     LessonRepository lessonRepository;
+    @Autowired
+    IUserService iUserService;
 
     @Override
     public CommentDto saveComment(CommentDto dto) throws CustomException {
@@ -40,15 +43,11 @@ public class CommentServiceImpl implements CommentService {
             entity = new Comment();
         }
 
-//        UserPrincipal userPrincipal = (UserPrincipal) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
-//        if(userPrincipal == null && userPrincipal.getId() == null){
-//            throw new CustomException("User is not null");
-//        }
-//        Users users = userRepository.findById(userPrincipal.getId()).orElse(null);
-//        if(users == null || users.getId() != null){
-//            throw new CustomException("User not found");
-//        }
-//        entity.setUsers(users);
+        Users users = iUserService.getCurrentUser();
+        if(users == null || users.getId() == null){
+            throw new CustomException("User not found");
+        }
+        entity.setUsers(users);
 
         entity.setContent(dto.getContent());
 
