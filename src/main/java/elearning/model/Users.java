@@ -26,7 +26,7 @@ public class Users extends BaseObject {
 			  inverseJoinColumns = @JoinColumn(name = "role_id")
 	)
 	private Set<Roles> roles;
-	@ManyToMany(fetch = FetchType.EAGER )
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 			  name = "wish_list",
 			  joinColumns = @JoinColumn(name = "user_id"),

@@ -1,5 +1,6 @@
 package elearning.repository;
 
+import elearning.model.Course;
 import elearning.model.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,5 +16,8 @@ public interface IUserRepository extends JpaRepository<Users,Long> {
 
     @Query("select  u from Users u WHERE (LOWER(u.fullName) LIKE LOWER(CONCAT('%', :name, '%')) OR :name = '' ) AND (u.phone = :phone OR :phone = '')")
     Page<Users> findUsersByFullNameAndPhone(String name, String phone, Pageable pageble);
+
+    @Query("select u.favourite from Users u where u.id = :userId")
+    Page<Course> getWistListByUserId(Long userId, Pageable pageable);
 
 }
