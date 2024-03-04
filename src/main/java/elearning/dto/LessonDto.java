@@ -13,6 +13,8 @@ public class LessonDto  extends BaseObjectDto {
     private String resources;
     private String description;
     private ChapterDto chapterDto;
+    private Long chapterId;
+    private String document;
 
     public LessonDto() {
     }
@@ -23,8 +25,10 @@ public class LessonDto  extends BaseObjectDto {
         this.video = entity.getVideo();
         this.resources = entity.getResources();
         this.description = entity.getDescription();
+        this.document =entity.getDocument();
         if(entity.getChapter() != null){
-            this.chapterDto = new ChapterDto(entity.getChapter());
+//            this.chapterDto = new ChapterDto(entity.getChapter());
+            this.chapterId = entity.getChapter().getId();
         }
     }
 
@@ -34,8 +38,10 @@ public class LessonDto  extends BaseObjectDto {
         this.video = entity.getVideo();
         this.resources = entity.getResources();
         this.description = entity.getDescription();
+        this.document =entity.getDocument();
         if(entity.getChapter() != null){
-            this.chapterDto = new ChapterDto(entity.getChapter());
+//            this.chapterDto = new ChapterDto(entity.getChapter());
+            this.chapterId = entity.getChapter().getId();
         }
         if (isGetFull) {
             this.createDate = entity.getCreateDate();
