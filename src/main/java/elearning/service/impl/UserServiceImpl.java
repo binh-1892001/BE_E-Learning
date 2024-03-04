@@ -131,7 +131,7 @@ public class UserServiceImpl implements IUserService {
         }
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new RuntimeException("user not found"));
+        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new CustomException("user not found"));
         String refreshToken = null;
 //        if (users.getRefreshToken() == null || users.getRefreshToken().isEmpty()) {
 //            refreshToken = jwtProvider.generateRefreshToken(userPrincipal);
@@ -192,7 +192,7 @@ public class UserServiceImpl implements IUserService {
     /*Admin*/
     @Override
     public void editUser(EditUserRequest editUserRequest, Long id) throws CustomException {
-        Users users = userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
+        Users users = userRepository.findById(id).orElseThrow(()->new CustomException("User not found"));
         BeanUtils.copyProperties(editUserRequest,users);
         if (editUserRequest.getRole() != null && !editUserRequest.getRole().isEmpty()) {
             Set<Roles> roles = new HashSet<>();
