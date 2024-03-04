@@ -21,13 +21,18 @@ public class ChapterController {
     private ChapterService chapterService;
 
     @PostMapping("/save")
-    public ResponseEntity<ChapterDto> saveOrUpdate(@RequestBody ChapterDto request) throws CustomException {
+    public ResponseEntity<ChapterDto> save(@RequestBody ChapterDto request) throws CustomException {
         ChapterDto ret = chapterService.saveChapter(request);
+        return ResponseEntity.ok(ret);
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ChapterDto> update(@RequestBody ChapterDto request, @PathVariable Long id) throws CustomException {
+        ChapterDto ret = chapterService.upDateChapter(request, id);
         return ResponseEntity.ok(ret);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) throws CustomException {
         chapterService.deleteChapter(id);
     }
 

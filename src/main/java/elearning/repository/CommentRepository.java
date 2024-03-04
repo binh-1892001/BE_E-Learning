@@ -14,10 +14,10 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Long> {
-    @Query("select new elearning.dto.CommentDto(e, true) from Comment e")
+    @Query("select new elearning.dto.CommentDto(e, true) from Comment e where (e.voided is null OR e.voided = false ) ")
     List<CommentDto> getAll();
 
     @Query("select new elearning.dto.CommentDto(e, true) from Comment e" +
-            " order by e.id asc ")
+            " where (e.voided is null OR e.voided = false ) order by e.id asc ")
     Page<CommentDto> getCommentPage(Pageable pageable);
 }

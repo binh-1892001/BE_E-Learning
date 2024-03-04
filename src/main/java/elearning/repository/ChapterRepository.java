@@ -13,11 +13,11 @@ import java.util.List;
 
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter,Long> {
-    @Query("select new elearning.dto.ChapterDto(e, true) from Chapter e")
+    @Query("select new elearning.dto.ChapterDto(e, true) from Chapter e where (e.voided is null OR e.voided = false )")
     List<ChapterDto> getAll();
 
     @Query("select new elearning.dto.ChapterDto(e, true) from Chapter e"
-            + " Where  ( :title is null or  e.title like concat('%',:title,'%'))"
+            + " Where (e.voided is null OR e.voided = false ) AND ( :title is null or  e.title like concat('%',:title,'%'))"
             + " order by e.id asc ")
     Page<ChapterDto> getChapterPage(Pageable pageable, String title);
 }

@@ -10,8 +10,9 @@ import java.util.List;
 public interface LessonService {
 
     LessonDto saveLesson(LessonDto dto) throws CustomException;
+    LessonDto upDateLesson(LessonDto dto, Long id) throws CustomException;
 
-    void deleteLesson(Long id);
+    void deleteLesson(Long id) throws CustomException;
 
     List<LessonDto> getAllLesson();
 

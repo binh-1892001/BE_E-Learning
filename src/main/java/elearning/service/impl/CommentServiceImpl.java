@@ -32,35 +32,26 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     IUserService iUserService;
 
-    @Override
-    public CommentDto saveComment(CommentDto dto) throws CustomException {
-        if (dto == null) return null;
-        Comment entity = null;
-        if (dto.getId() != null) {
-            entity = commentRepository.findById(dto.getId()).orElse(null);
-        }
-        if (entity == null) {
-            entity = new Comment();
-        }
+    public CommentDto save(Comment entity, CommentDto dto) throws CustomException {
 
         Users users = iUserService.getCurrentUser();
-        if(users == null || users.getId() == null){
+        if (users == null || users.getId() == null) {
             throw new CustomException("User not found");
         }
         entity.setUsers(users);
 
         entity.setContent(dto.getContent());
 
-        if(dto.getLesson() == null || dto.getLesson().getId() == null){
+        if (dto.getLesson() == null || dto.getLesson().getId() == null) {
             throw new CustomException("Lesson is not null");
         }
         Lesson lesson = lessonRepository.findById(dto.getLesson().getId()).orElse(null);
-        if (lesson == null){
+        if (lesson == null) {
             throw new CustomException("Lesson not found");
         }
         entity.setLesson(lesson);
 
-        if(dto.getComment() != null && dto.getComment().getId() != null){
+        if (dto.getComment() != null && dto.getComment().getId() != null) {
             Comment comment = commentRepository.findById(dto.getComment().getId()).orElse(null);
             entity.setComment(comment);
         }
@@ -70,8 +61,22 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
+    public CommentDto saveComment(CommentDto dto) throws CustomException {
+        Comment entity = new Comment();
+        return this.save(entity, dto);
+    }
+
+    @Override
+    public CommentDto upDateComment(CommentDto dto, Long id) throws CustomException {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException("Comment not found"));
+        return this.save(comment, dto);
+    }
+
+    @Override
+    public void deleteComment(Long id) throws CustomException {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException("Comment not found"));
+        comment.setVoided(true);
+        commentRepository.save(comment);
     }
 
     @Override
@@ -83,6 +88,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto getCommentDtoById(Long id) throws CustomException {
         return new CommentDto(this.getCommentById(id));
     }
+
     private Comment getCommentById(Long id) throws CustomException {
         Optional<Comment> optional = commentRepository.findById(id);
         if (optional.isPresent()) {

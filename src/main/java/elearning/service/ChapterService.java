@@ -10,8 +10,9 @@ import java.util.List;
 public interface ChapterService {
 
     ChapterDto saveChapter(ChapterDto dto) throws CustomException;
+    ChapterDto upDateChapter(ChapterDto dto, Long id) throws CustomException;
 
-    void deleteChapter(Long id);
+    void deleteChapter(Long id) throws CustomException;
 
     List<ChapterDto> getAllChapter();
 

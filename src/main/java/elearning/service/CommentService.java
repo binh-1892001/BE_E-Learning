@@ -1,5 +1,6 @@
 package elearning.service;
 
+import elearning.dto.ChapterDto;
 import elearning.dto.CommentDto;
 import elearning.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -10,8 +11,9 @@ import java.util.List;
 public interface CommentService {
 
     CommentDto saveComment(CommentDto dto) throws CustomException;
+    CommentDto upDateComment(CommentDto dto, Long id) throws CustomException;
 
-    void deleteComment(Long id);
+    void deleteComment(Long id) throws CustomException;
 
     List<CommentDto> getAllComment();
 
