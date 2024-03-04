@@ -12,11 +12,11 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    @Query("select new elearning.dto.CourseDto(e, true) from Course e")
+    @Query("select new elearning.dto.CourseDto(e, true) from Course e where (e.voided is null OR e.voided = false ) ")
     List<CourseDto> getAll();
 
     @Query("select new elearning.dto.CourseDto(e, true) from Course e"
-            + " Where ( :title is null or  e.title like concat('%',:title,'%'))" +
+            + " Where (e.voided is null OR e.voided = false ) AND ( :title is null or  e.title like concat('%',:title,'%'))" +
             "  order by e.id asc ")
     Page<CourseDto> getCoursePage(Pageable pageable, String title);
 

@@ -21,7 +21,7 @@ public class UsersDto extends BaseObjectDto {
         this.username = entity.getUsername();
         this.fullName = entity.getFullName();
         this.phone = entity.getPhone();
-        this.password = entity.getPassword();
+//        this.password = entity.getPassword();
         this.isActive = entity.getIsActive();
     }
 

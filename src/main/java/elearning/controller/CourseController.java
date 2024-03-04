@@ -1,5 +1,6 @@
 package elearning.controller;
 
+import elearning.dto.CommentDto;
 import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
 import elearning.service.CourseService;
@@ -26,14 +27,21 @@ public class CourseController {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/save")
-    public ResponseEntity<CourseDto> saveOrUpdate(@ModelAttribute CourseDto request) throws IOException {
+    public ResponseEntity<CourseDto> save(@ModelAttribute CourseDto request) throws IOException {
         CourseDto ret = courseService.saveCourse(request);
         return ResponseEntity.ok(ret);
     }
 
     @Secured({"ROLE_ADMIN"})
+    @PutMapping("/update/{id}")
+    public ResponseEntity<CourseDto> update(@ModelAttribute CourseDto request, @PathVariable Long id) throws CustomException, IOException {
+        CourseDto ret = courseService.upDateCourse(request, id);
+        return ResponseEntity.ok(ret);
+    }
+
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) throws CustomException {
         courseService.deleteCourse(id);
     }
 

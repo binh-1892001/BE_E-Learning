@@ -3,6 +3,7 @@ package elearning.service.impl;
 import elearning.dto.LessonDto;
 import elearning.exception.CustomException;
 import elearning.model.Chapter;
+import elearning.model.Comment;
 import elearning.model.Lesson;
 import elearning.repository.ChapterRepository;
 import elearning.repository.LessonRepository;
@@ -22,16 +23,8 @@ public class LessonServiceImpl implements LessonService {
     @Autowired
     ChapterRepository chapterRepository;
 
-    @Override
-    public LessonDto saveLesson(LessonDto dto) throws CustomException {
-        if (dto == null) return null;
-        Lesson entity = null;
-        if (dto.getId() != null) {
-            entity = lessonRepository.findById(dto.getId()).orElse(null);
-        }
-        if (entity == null) {
-            entity = new Lesson();
-        }
+    public LessonDto save(Lesson entity, LessonDto dto) throws CustomException {
+
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
         entity.setVideo(dto.getVideo());
@@ -51,8 +44,23 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public void deleteLesson(Long id) {
-        lessonRepository.deleteById(id);
+    public LessonDto saveLesson(LessonDto dto) throws CustomException {
+        Lesson entity = new Lesson();
+        return this.save(entity, dto);
+    }
+
+    @Override
+    public LessonDto upDateLesson(LessonDto dto, Long id) throws CustomException {
+        Lesson lesson = lessonRepository.findById(id).orElseThrow(() -> new CustomException("Lesson not found"));
+        return this.save(lesson, dto);
+    }
+
+
+    @Override
+    public void deleteLesson(Long id) throws CustomException {
+        Lesson lesson = lessonRepository.findById(id).orElseThrow(() -> new CustomException("Lesson not found") );
+        lesson.setVoided(true);
+        lessonRepository.save(lesson);
     }
 
     @Override

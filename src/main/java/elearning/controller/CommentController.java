@@ -1,5 +1,6 @@
 package elearning.controller;
 
+import elearning.dto.ChapterDto;
 import elearning.dto.CommentDto;
 import elearning.exception.CustomException;
 import elearning.service.CommentService;
@@ -21,13 +22,18 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/save")
-    public ResponseEntity<CommentDto> saveOrUpdate(@RequestBody CommentDto request) throws CustomException {
+    public ResponseEntity<CommentDto> save(@RequestBody CommentDto request) throws CustomException {
         CommentDto ret = commentService.saveComment(request);
+        return ResponseEntity.ok(ret);
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<CommentDto> update(@RequestBody CommentDto request, @PathVariable Long id) throws CustomException {
+        CommentDto ret = commentService.upDateComment(request, id);
         return ResponseEntity.ok(ret);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) throws CustomException {
         commentService.deleteComment(id);
     }
 

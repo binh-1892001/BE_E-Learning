@@ -24,24 +24,16 @@ public class ChapterServiceImpl implements ChapterService {
     @Autowired
     CourseRepository courseRepository;
 
-    @Override
-    public ChapterDto saveChapter(ChapterDto dto) throws CustomException {
-        if (dto == null) return null;
-        Chapter entity = null;
-        if (dto.getId() != null) {
-            entity = chapterRepository.findById(dto.getId()).orElse(null);
-        }
-        if (entity == null) {
-            entity = new Chapter();
-        }
+    public ChapterDto save(Chapter entity, ChapterDto dto) throws CustomException {
+
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
 
-        if(dto.getCourse() == null || dto.getCourse().getId() == null){
+        if (dto.getCourse() == null || dto.getCourse().getId() == null) {
             throw new CustomException("Course is not null");
         }
         Course course = courseRepository.findById(dto.getCourse().getId()).orElse(null);
-        if (course == null){
+        if (course == null) {
             throw new CustomException("Course is not null");
         }
         entity.setCourse(course);
@@ -50,9 +42,22 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public void deleteChapter(Long id) {
-        chapterRepository.deleteById(id);
+    public ChapterDto saveChapter(ChapterDto dto) throws CustomException {
+        Chapter entity = new Chapter();
+        return this.save(entity, dto);
+    }
 
+    @Override
+    public ChapterDto upDateChapter(ChapterDto dto, Long id) throws CustomException {
+        Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new CustomException("Chapter not found"));
+        return this.save(chapter, dto);
+    }
+
+    @Override
+    public void deleteChapter(Long id) throws CustomException {
+        Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new CustomException("Chapter not found"));
+        chapter.setVoided(true);
+        chapterRepository.save(chapter);
     }
 
     @Override

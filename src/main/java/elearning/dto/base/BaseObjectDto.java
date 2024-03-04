@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class BaseObjectDto extends AuditableEntityDto{
     protected Long id;
+    protected boolean voided;
 
     public BaseObjectDto() {
     }

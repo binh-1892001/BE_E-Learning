@@ -1,5 +1,6 @@
 package elearning.controller;
 
+import elearning.dto.CommentDto;
 import elearning.dto.LessonDto;
 import elearning.exception.CustomException;
 import elearning.service.LessonService;
@@ -21,13 +22,18 @@ public class LessonController {
     private LessonService lessonService;
 
     @PostMapping("/save")
-    public ResponseEntity<LessonDto> saveOrUpdate(@RequestBody LessonDto request) throws CustomException {
+    public ResponseEntity<LessonDto> save(@RequestBody LessonDto request) throws CustomException {
         LessonDto ret = lessonService.saveLesson(request);
+        return ResponseEntity.ok(ret);
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<LessonDto> update(@RequestBody LessonDto request, @PathVariable Long id) throws CustomException {
+        LessonDto ret = lessonService.upDateLesson(request, id);
         return ResponseEntity.ok(ret);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) throws CustomException {
         lessonService.deleteLesson(id);
     }
 
