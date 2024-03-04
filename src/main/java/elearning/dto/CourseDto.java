@@ -15,7 +15,6 @@ public class CourseDto extends BaseObjectDto {
     private String title;
     private String image;
     private String description;
-    private MultipartFile imageFile;
 
     public CourseDto() {
     }
