@@ -13,8 +13,9 @@ import java.util.Set;
 @Setter
 @Builder
 public class Users extends BaseObject {
-	private String username;
+//	private String username;
 	private String fullName;
+	@Column(unique = true)
 	private String phone;
 	private String password;
 	private Boolean isActive = true;

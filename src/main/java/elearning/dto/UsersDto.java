@@ -18,7 +18,7 @@ public class UsersDto extends BaseObjectDto {
     }
 
     public UsersDto(Users entity) {
-        this.username = entity.getUsername();
+//        this.username = entity.getUsername();
         this.fullName = entity.getFullName();
         this.phone = entity.getPhone();
         this.password = entity.getPassword();
@@ -26,7 +26,7 @@ public class UsersDto extends BaseObjectDto {
     }
 
     public UsersDto(Users entity, Boolean isGetFull) {
-        this.username = entity.getUsername();
+//        this.username = entity.getUsername();
         this.fullName = entity.getFullName();
         this.phone = entity.getPhone();
 //        this.password = entity.getPassword();

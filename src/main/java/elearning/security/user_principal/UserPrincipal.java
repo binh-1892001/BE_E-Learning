@@ -20,7 +20,7 @@ public class UserPrincipal implements UserDetails {
     public UserPrincipal(Users user) {
         this.id = user.getId();
         this.fullName =user.getFullName();
-        this.username= user.getUsername();
+        this.username= user.getPhone();
         this.password =user.getPassword();
         this.authorities = user.getRoles().stream().map(item->new SimpleGrantedAuthority(item.getRoleName().toString())).toList();}
     @Override
