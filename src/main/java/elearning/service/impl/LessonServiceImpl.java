@@ -29,6 +29,7 @@ public class LessonServiceImpl implements LessonService {
         entity.setDescription(dto.getDescription());
         entity.setVideo(dto.getVideo());
         entity.setResources(dto.getResources());
+        entity.setDocument(dto.getDocument());
 
         if(dto.getChapterDto() == null || dto.getChapterDto().getId() == null){
             throw new CustomException("Chapter is not null");

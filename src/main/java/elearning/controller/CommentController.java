@@ -55,4 +55,16 @@ public class CommentController {
         return ResponseEntity.ok(ret);
     }
 
+    @GetMapping("/paging-comment-parent")
+    public ResponseEntity<Page<CommentDto>> pagingCommentParent(@PageableDefault(page = 0, size = 2) Pageable pageable) {
+        Page<CommentDto> ret = commentService.pagingCommentParent(pageable);
+        return ResponseEntity.ok(ret);
+    }
+
+    @GetMapping("/paging-comment-children")
+    public ResponseEntity<Page<CommentDto>> pagingCommentChildrenByParentId(@PageableDefault(page = 0, size = 2) Pageable pageable
+            , @RequestParam Long parentId) {
+        Page<CommentDto> ret = commentService.pagingCommentChildrenByParentId(pageable, parentId);
+        return ResponseEntity.ok(ret);
+    }
 }

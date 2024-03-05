@@ -20,5 +20,7 @@ public interface CommentService {
     CommentDto getCommentDtoById(Long id) throws CustomException;
 
     Page<CommentDto> pagingCommentDto(Pageable pageable);
+    Page<CommentDto> pagingCommentParent(Pageable pageable);
+    Page<CommentDto> pagingCommentChildrenByParentId(Pageable pageable, Long parentId);
 
 }

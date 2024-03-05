@@ -27,14 +27,14 @@ public class CourseController {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/save")
-    public ResponseEntity<CourseDto> save(@RequestBody CourseDto request) throws IOException {
+    public ResponseEntity<CourseDto> save(@ModelAttribute CourseDto request) throws IOException {
         CourseDto ret = courseService.saveCourse(request);
         return ResponseEntity.ok(ret);
     }
 
     @Secured({"ROLE_ADMIN"})
     @PutMapping("/update/{id}")
-    public ResponseEntity<CourseDto> update(@RequestBody CourseDto request, @PathVariable Long id) throws CustomException, IOException {
+    public ResponseEntity<CourseDto> update(@ModelAttribute CourseDto request, @PathVariable Long id) throws CustomException, IOException {
         CourseDto ret = courseService.upDateCourse(request, id);
         return ResponseEntity.ok(ret);
     }

@@ -33,15 +33,42 @@ import java.util.regex.Pattern;
 public class CourseServiceImpl implements CourseService {
     @Autowired
     CourseRepository courseRepository;
-    @PersistenceContext
-    public EntityManager manager;
+
+    @Value("${course.file.path.img}")
+    private String filePath;
 
     public CourseDto save(Course entity, CourseDto dto) throws IOException {
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
-        entity.setImage(dto.getImage());
+        entity = this.uploadFileImg(dto, entity);
         entity = courseRepository.save(entity);
         return new CourseDto(entity);
+    }
+    // upload file img
+    private Course uploadFileImg(CourseDto dto, Course entity) throws IOException {
+        if (dto.getImageFile() != null) {
+            LocalDateTime dateTime = LocalDateTime.now();
+            String formattedDateTime = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-nnnnnnnnn"));
+            String filename = formattedDateTime + "_" + removeAccentsAndSpaces(dto.getImageFile().getOriginalFilename());
+
+            entity.setImage(filename);
+
+            // ghi file
+            byte[] bytes = dto.getImageFile().getBytes();
+            Path path = Paths.get(filePath + filename);
+            Files.write(path, bytes);
+
+        }
+        return entity;
+    }
+
+    private String removeAccentsAndSpaces(String s) {
+        String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        String result = pattern.matcher(temp).replaceAll("");
+        result = result.replaceAll("đ", "d").replaceAll("Đ", "D");
+        result = result.replaceAll("\\s+", "");
+        return result;
     }
     @Override
     public CourseDto saveCourse(CourseDto dto) throws IOException {
