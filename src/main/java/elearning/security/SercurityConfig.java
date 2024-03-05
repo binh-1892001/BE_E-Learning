@@ -52,7 +52,7 @@ public class SercurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests((auth) ->
-                        auth.requestMatchers("/auth/**","/public/**","/api/v1/user/register","/api/v1/user-clipboard","/img/**").permitAll()
+                        auth.requestMatchers("/auth/**","/public/**","/api/v1/user/register","/api/v1/user-clipboard/**","/img/**").permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling((auth) ->
                         auth.authenticationEntryPoint(jwtEntryPoint)
