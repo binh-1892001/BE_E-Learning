@@ -1,11 +1,11 @@
 package elearning.model;
 
 import elearning.model.base.BaseObject;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -24,7 +24,4 @@ public class Comment extends BaseObject {
 	@ManyToOne
 	@JoinColumn(name = "comment_id")
 	private Comment comment;
-
-	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private Set<Comment> commentChildren = new HashSet<>();
 }
