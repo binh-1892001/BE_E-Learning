@@ -40,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto save(Course entity, CourseDto dto) throws IOException {
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
+        entity.setSubDescription(dto.getSubDescription());
         entity = this.uploadFileImg(dto, entity);
         entity = courseRepository.save(entity);
         return new CourseDto(entity);

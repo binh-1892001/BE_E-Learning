@@ -16,6 +16,7 @@ public class CourseDto extends BaseObjectDto {
     private String image;
     private String description;
     private MultipartFile imageFile;
+    private String subDescription;
 
     public CourseDto() {
     }
@@ -25,6 +26,7 @@ public class CourseDto extends BaseObjectDto {
         this.title = entity.getTitle();
         this.image = entity.getImage();
         this.description = entity.getDescription();
+        this.subDescription = entity.getSubDescription();
     }
 
     public CourseDto(Course entity, Boolean isGetFull) {
@@ -32,6 +34,7 @@ public class CourseDto extends BaseObjectDto {
         this.title = entity.getTitle();
         this.image = entity.getImage();
         this.description = entity.getDescription();
+        this.subDescription = entity.getSubDescription();
         if (isGetFull) {
             this.createDate = entity.getCreateDate();
             this.modifyBy = entity.getModifyBy();
