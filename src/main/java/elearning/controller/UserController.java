@@ -59,7 +59,13 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/find-all")
-    ResponseEntity<Page<UserReponse>> findAllUser(@RequestParam("name") String name, @RequestParam("phone") String phone, @PageableDefault(page = 0, size = 10,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
+    ResponseEntity<Page<UserReponse>> findAllUser(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "phone", required = false) String phone, @PageableDefault(page = 0, size = 10,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
         return new ResponseEntity<>(userService.findAll(name,phone,pageable),HttpStatus.OK);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/change-status/{id}")
+    ResponseEntity<Boolean> changeStatus(@PathVariable Long id) throws CustomException {
+        return new ResponseEntity<>(userService.changeStatusActiveUser(id), HttpStatus.OK);
     }
 }

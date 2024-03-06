@@ -19,9 +19,9 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
     private final Logger logger = LoggerFactory.getLogger(JwtEntryPoint.class);
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        logger.error("Un Authentication", authException.getMessage());
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("Un Authentication", HttpStatus.UNAUTHORIZED);
-        response.setStatus(responseEntity.getStatusCodeValue());
-        response.getWriter().write(Objects.requireNonNull(responseEntity.getBody()));
+//        logger.error("Un Authentication", authException.getMessage());
+//        ResponseEntity<String> responseEntity = new ResponseEntity<>("Un Authentication", HttpStatus.UNAUTHORIZED);
+//        response.setStatus(responseEntity.getStatusCodeValue());
+//        response.getWriter().write(Objects.requireNonNull(responseEntity.getBody()));
     }
 }

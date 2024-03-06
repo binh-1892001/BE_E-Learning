@@ -11,10 +11,12 @@ import elearning.exception.CustomException;
 import elearning.model.Roles;
 import elearning.model.Users;
 import elearning.repository.IUserRepository;
+import elearning.repository.UserClipBoardRepository;
 import elearning.security.jwt.JwtProvider;
 import elearning.security.user_principal.UserPrincipal;
 import elearning.service.IRoleService;
 import elearning.service.IUserService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -31,8 +33,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.GrantedAuthority;
 
+import javax.security.auth.login.AccountLockedException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +57,9 @@ public class UserServiceImpl implements IUserService {
     private AuthenticationProvider authenticationProvider;
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private UserClipBoardRepository userClipBoardRepository;
 
 //    @Override
 //    public void register(UserRegister userRegister) {
@@ -98,9 +105,13 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
+    @Transactional
     public void registerUser(UserInfoRequest userInfoRequest) throws CustomException {
         if(userRepository.existsByPhone(userInfoRequest.getPhone())){
             throw new CustomException("Username is registed");
+        }
+        if(userClipBoardRepository.existsByPhone(userInfoRequest.getPhone())){
+            userClipBoardRepository.deleteByPhone(userInfoRequest.getPhone());
         }
         setInfoUser(userInfoRequest, Set.of(RoleName.ROLE_USER),new Users());
     }
@@ -127,12 +138,12 @@ public class UserServiceImpl implements IUserService {
         try {
             authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getPhone(), userLogin.getPassword()));
         } catch (AuthenticationException e) {
-            throw new CustomException("Username or Password is incorrect 11312321");
+            throw new CustomException("Bad credentials:" +e.getMessage());
         }
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new CustomException("user not found"));
-        String refreshToken = null;
+//        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new CustomException("user not found"));
+//        String refreshToken = null;
 //        if (users.getRefreshToken() == null || users.getRefreshToken().isEmpty()) {
 //            refreshToken = jwtProvider.generateRefreshToken(userPrincipal);
 //
@@ -148,7 +159,7 @@ public class UserServiceImpl implements IUserService {
         // thực hiện trả về cho người dùng
         return JwtResponse.builder()
                 .accessToken(jwtProvider.generateToken(userPrincipal))
-                .refreshToken(refreshToken)
+                .refreshToken(null)
                 .expired(EXPIRED)
                 .fullName(userPrincipal.getFullName())
                 .username(userPrincipal.getUsername())
@@ -222,6 +233,15 @@ public class UserServiceImpl implements IUserService {
         UserPrincipal userPrincipal = (UserPrincipal) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
         return userRepository.findUsersByPhone(userPrincipal.getUsername()).orElseThrow(()-> new RuntimeException("User not found"));
     }
+
+    @Override
+    public boolean changeStatusActiveUser(Long id) throws CustomException {
+        Users users = userRepository.findById(id).orElseThrow(()-> new CustomException("User not found"));
+        users.setActive(!(Objects.isNull(users.getActive()) || users.getActive()));
+        userRepository.save(users);
+        return users.getActive();
+    }
+
     private void copyPropertiesUser(Object o, Users users){
         BeanUtils.copyProperties(o, users);
     }
