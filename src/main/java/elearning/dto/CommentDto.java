@@ -12,6 +12,7 @@ public class CommentDto extends BaseObjectDto {
     private String content;
     private UsersDto users;
     private LessonDto lesson;
+    private Long lessonId;
     private CommentDto comment;
     private Long parentId;
 
@@ -25,7 +26,8 @@ public class CommentDto extends BaseObjectDto {
             this.users = new UsersDto(entity.getUsers());
         }
         if(entity.getLesson() != null && entity.getLesson().getId() != null){
-            this.lesson = new LessonDto(entity.getLesson());
+//            this.lesson = new LessonDto(entity.getLesson());
+            this.lessonId = entity.getLesson().getId();
         }
         if(entity.getComment() != null && entity.getComment().getId() != null){
             this.parentId = entity.getComment().getId();
@@ -45,7 +47,8 @@ public class CommentDto extends BaseObjectDto {
             this.users = new UsersDto(entity.getUsers());
         }
         if(entity.getLesson() != null && entity.getLesson().getId() != null){
-            this.lesson = new LessonDto(entity.getLesson());
+//            this.lesson = new LessonDto(entity.getLesson());
+            this.lessonId = entity.getLesson().getId();
         }
         if(entity.getComment() != null && entity.getComment().getId() != null){
             this.parentId = entity.getComment().getId();

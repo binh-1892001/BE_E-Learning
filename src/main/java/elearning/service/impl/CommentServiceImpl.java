@@ -102,4 +102,17 @@ public class CommentServiceImpl implements CommentService {
         Page<CommentDto> page = commentRepository.getCommentPage(pageable);
         return page;
     }
+
+    @Override
+    public Page<CommentDto> pagingCommentParent(Pageable pageable) {
+        Page<CommentDto> page = commentRepository.getCommentParentPage(pageable);
+        return page;
+    }
+
+    @Override
+    public Page<CommentDto> pagingCommentChildrenByParentId(Pageable pageable, Long parentId) {
+        Page<CommentDto> page = commentRepository.getCommentChildrenByParentId(pageable, parentId);
+        return page;
+    }
+
 }
