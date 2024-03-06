@@ -36,4 +36,6 @@ public interface IUserService {
 
     Users getCurrentUser();
 
+    boolean changeStatusActiveUser(Long id) throws CustomException;
+
 }
