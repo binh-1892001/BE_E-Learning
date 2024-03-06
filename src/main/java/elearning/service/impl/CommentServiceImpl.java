@@ -75,7 +75,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long id) throws CustomException {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException("Comment not found"));
-        comment.setVoided(true);
+        if(comment.getVoided() == null || comment.getVoided() == false){
+            comment.setVoided(true);
+        }else {
+            comment.setVoided(false);
+        }
         commentRepository.save(comment);
     }
 

@@ -27,6 +27,9 @@ public class CourseDto extends BaseObjectDto {
         this.image = entity.getImage();
         this.description = entity.getDescription();
         this.subDescription = entity.getSubDescription();
+        if (entity.getVoided() != null) {
+            this.voided = entity.getVoided();
+        }
     }
 
     public CourseDto(Course entity, Boolean isGetFull) {
@@ -35,6 +38,9 @@ public class CourseDto extends BaseObjectDto {
         this.image = entity.getImage();
         this.description = entity.getDescription();
         this.subDescription = entity.getSubDescription();
+        if (entity.getVoided() != null) {
+            this.voided = entity.getVoided();
+        }
         if (isGetFull) {
             this.createDate = entity.getCreateDate();
             this.modifyBy = entity.getModifyBy();

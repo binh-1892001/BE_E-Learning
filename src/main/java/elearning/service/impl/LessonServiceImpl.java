@@ -60,7 +60,11 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void deleteLesson(Long id) throws CustomException {
         Lesson lesson = lessonRepository.findById(id).orElseThrow(() -> new CustomException("Lesson not found") );
-        lesson.setVoided(true);
+        if(lesson.getVoided() == null || lesson.getVoided() == false){
+            lesson.setVoided(true);
+        }else {
+            lesson.setVoided(false);
+        }
         lessonRepository.save(lesson);
     }
 

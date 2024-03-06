@@ -87,7 +87,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(Long id) throws CustomException {
         Course course = courseRepository.findById(id).orElseThrow(() -> new CustomException("Course not found") );
-        course.setVoided(true);
+        if(course.getVoided() == null || course.getVoided() == false){
+            course.setVoided(true);
+        }else {
+            course.setVoided(false);
+        }
         courseRepository.save(course);
     }
 
