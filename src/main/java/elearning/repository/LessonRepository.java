@@ -12,11 +12,10 @@ import java.util.List;
 
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson,Long> {
-    @Query("select new elearning.dto.LessonDto(e, true) from Lesson e where (e.voided is null OR e.voided = false ) ")
+    @Query("select new elearning.dto.LessonDto(e, true) from Lesson e  ")
     List<LessonDto> getAll();
 
     @Query("select new elearning.dto.LessonDto(e, true) from Lesson e"
-            + " Where (e.voided is null OR e.voided = false ) AND ( :title is null or  e.title like concat('%',:title,'%'))" +
-            "  order by e.id asc  ")
+            + " Where  ( :title is null or  e.title like concat('%',:title,'%'))")
     Page<LessonDto> getLessonPage(Pageable pageable, String title);
 }

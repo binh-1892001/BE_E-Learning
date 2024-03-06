@@ -56,7 +56,7 @@ public class CommentController {
     }
 
     @GetMapping("/paging-comment-parent")
-    public ResponseEntity<Page<CommentDto>> pagingCommentParent(@PageableDefault(page = 0, size = 2) Pageable pageable) {
+    public ResponseEntity<Page<CommentDto>> pagingCommentParent(@PageableDefault(page = 0, size = 2,sort = "id",direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CommentDto> ret = commentService.pagingCommentParent(pageable);
         return ResponseEntity.ok(ret);
     }
