@@ -20,6 +20,7 @@ public class Course extends BaseObject {
 	private String title;
 	private String image;
 	private String description;
+	private String subDescription;
 
 	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private Set<Chapter> chapters = new HashSet<>();

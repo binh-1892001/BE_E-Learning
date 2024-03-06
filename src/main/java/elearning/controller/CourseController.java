@@ -53,7 +53,7 @@ public class CourseController {
     }
 
     @GetMapping("/paging")
-    public ResponseEntity<Page<CourseDto>> paging(@PageableDefault(page = 0, size = 2) Pageable pageable
+    public ResponseEntity<Page<CourseDto>> paging(@PageableDefault(page = 0, size = 2,sort = "id",direction = Sort.Direction.DESC) Pageable pageable
             , @RequestParam(required = false) String title) {
         Page<CourseDto> ret = courseService.pagingCourseDto(pageable, title);
         return ResponseEntity.ok(ret);

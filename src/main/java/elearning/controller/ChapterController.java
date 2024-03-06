@@ -43,7 +43,7 @@ public class ChapterController {
     }
 
     @GetMapping("/paging")
-    public ResponseEntity<Page<ChapterDto>> paging(@PageableDefault(page = 0, size = 2) Pageable pageable
+    public ResponseEntity<Page<ChapterDto>> paging(@PageableDefault(page = 0, size = 2,sort = "id",direction = Sort.Direction.DESC) Pageable pageable
             , @RequestParam(required = false) String title) {
         Page<ChapterDto> ret = chapterService.pagingChapterDto(pageable, title);
         return ResponseEntity.ok(ret);

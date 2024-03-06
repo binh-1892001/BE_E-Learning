@@ -237,9 +237,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean changeStatusActiveUser(Long id) throws CustomException {
         Users users = userRepository.findById(id).orElseThrow(()-> new CustomException("User not found"));
-        users.setActive(!(Objects.isNull(users.getActive()) || users.getActive()));
+        users.setVoided(!(Objects.isNull(users.getVoided()) || users.getVoided()));
         userRepository.save(users);
-        return users.getActive();
+        return users.getVoided();
     }
 
     private void copyPropertiesUser(Object o, Users users){

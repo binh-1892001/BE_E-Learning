@@ -56,7 +56,11 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     public void deleteChapter(Long id) throws CustomException {
         Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new CustomException("Chapter not found"));
-        chapter.setVoided(true);
+        if(chapter.getVoided() == null || chapter.getVoided() == false){
+            chapter.setVoided(true);
+        }else {
+            chapter.setVoided(false);
+        }
         chapterRepository.save(chapter);
     }
 

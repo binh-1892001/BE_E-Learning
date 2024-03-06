@@ -12,7 +12,6 @@ public class UsersDto extends BaseObjectDto {
     private String fullName;
     private String phone;
     private String password;
-    private Boolean active;
 
     public UsersDto() {
     }
@@ -22,7 +21,7 @@ public class UsersDto extends BaseObjectDto {
         this.fullName = entity.getFullName();
         this.phone = entity.getPhone();
 //        this.password = entity.getPassword();
-        this.active = entity.getActive();
+        this.voided = entity.getVoided();
     }
 
     public UsersDto(Users entity, Boolean isGetFull) {
@@ -30,7 +29,7 @@ public class UsersDto extends BaseObjectDto {
         this.fullName = entity.getFullName();
         this.phone = entity.getPhone();
 //        this.password = entity.getPassword();
-        this.active = entity.getActive();
+        this.voided = entity.getVoided();
 
         if (isGetFull) {
             this.createDate = entity.getCreateDate();

@@ -40,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto save(Course entity, CourseDto dto) throws IOException {
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
+        entity.setSubDescription(dto.getSubDescription());
         entity = this.uploadFileImg(dto, entity);
         entity = courseRepository.save(entity);
         return new CourseDto(entity);
@@ -86,7 +87,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(Long id) throws CustomException {
         Course course = courseRepository.findById(id).orElseThrow(() -> new CustomException("Course not found") );
-        course.setVoided(true);
+        if(course.getVoided() == null || course.getVoided() == false){
+            course.setVoided(true);
+        }else {
+            course.setVoided(false);
+        }
         courseRepository.save(course);
     }
 

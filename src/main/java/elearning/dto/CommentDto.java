@@ -32,6 +32,9 @@ public class CommentDto extends BaseObjectDto {
         if(entity.getComment() != null && entity.getComment().getId() != null){
             this.parentId = entity.getComment().getId();
         }
+        if (entity.getVoided() != null) {
+            this.voided = entity.getVoided();
+        }
         if (isGetFull) {
             this.createDate = entity.getCreateDate();
             this.modifyBy = entity.getModifyBy();

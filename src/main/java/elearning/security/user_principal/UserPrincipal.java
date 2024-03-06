@@ -18,15 +18,14 @@ public class UserPrincipal implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private String fullName;
-    @Getter
-    private boolean active;
+    private boolean voided;
 
     public UserPrincipal(Users user) {
         this.id = user.getId();
         this.fullName =user.getFullName();
         this.username= user.getPhone();
         this.password =user.getPassword();
-        this.active = Objects.isNull(user.getActive()) || user.getActive();
+        this.voided = Objects.isNull(user.getVoided()) || user.getVoided();
         this.authorities = user.getRoles().stream().map(item->new SimpleGrantedAuthority(item.getRoleName().toString())).toList();}
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -50,7 +49,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return active;
+        return voided;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return active;
+        return voided;
     }
 
 }

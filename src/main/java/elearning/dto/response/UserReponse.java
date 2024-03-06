@@ -20,7 +20,7 @@ public class UserReponse extends BaseObjectDto {
     private String fullName;
     private String phone;
     private List<String> role;
-    private Boolean active;
+    private Boolean voided;
 
     public UserReponse() {
     }
@@ -31,7 +31,7 @@ public class UserReponse extends BaseObjectDto {
 //        this.username = users.getUsername();
         this.fullName = users.getFullName();
         this.phone = users.getPhone();
-        this.active= users.getActive();
+        this.voided = users.getVoided();
         role = new ArrayList<>();
         if(users.getRoles() != null){
             users.getRoles().forEach(e->role.add(e.getRoleName().name()));
