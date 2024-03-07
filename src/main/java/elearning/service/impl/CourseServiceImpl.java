@@ -47,7 +47,7 @@ public class CourseServiceImpl implements CourseService {
     }
     // upload file img
     private Course uploadFileImg(CourseDto dto, Course entity) throws IOException {
-        if (dto.getImageFile() != null) {
+        if (dto.getImageFile() != null && !dto.getImageFile().isEmpty()) {
             LocalDateTime dateTime = LocalDateTime.now();
             String formattedDateTime = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-nnnnnnnnn"));
             String filename = formattedDateTime + "_" + removeAccentsAndSpaces(dto.getImageFile().getOriginalFilename());
