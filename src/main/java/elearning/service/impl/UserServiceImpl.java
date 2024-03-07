@@ -143,6 +143,7 @@ public class UserServiceImpl implements IUserService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
 //        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new CustomException("user not found"));
+//        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new CustomException("user not found"));
 //        String refreshToken = null;
 //        if (users.getRefreshToken() == null || users.getRefreshToken().isEmpty()) {
 //            refreshToken = jwtProvider.generateRefreshToken(userPrincipal);
