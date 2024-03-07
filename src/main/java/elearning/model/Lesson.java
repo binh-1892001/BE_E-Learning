@@ -17,6 +17,7 @@ public class Lesson extends BaseObject {
 	private String video;
 	private String resources;
 	private String description;
+	private String document;
 	@ManyToOne
 	@JoinColumn(name = "chapter_id")
 	private Chapter chapter;

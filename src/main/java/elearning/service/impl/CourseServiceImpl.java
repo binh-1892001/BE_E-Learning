@@ -2,6 +2,7 @@ package elearning.service.impl;
 
 import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
+import elearning.model.Comment;
 import elearning.model.Course;
 import elearning.repository.CourseRepository;
 import elearning.service.CourseService;
@@ -32,30 +33,18 @@ import java.util.regex.Pattern;
 public class CourseServiceImpl implements CourseService {
     @Autowired
     CourseRepository courseRepository;
-    @PersistenceContext
-    public EntityManager manager;
 
     @Value("${course.file.path.img}")
     private String filePath;
 
-    @Override
-    public CourseDto saveCourse(CourseDto dto) throws IOException {
-        if (dto == null) return null;
-        Course entity = null;
-        if (dto.getId() != null) {
-            entity = courseRepository.findById(dto.getId()).orElse(null);
-        }
-        if (entity == null) {
-            entity = new Course();
-        }
+    public CourseDto save(Course entity, CourseDto dto) throws IOException {
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
-
+        entity.setSubDescription(dto.getSubDescription());
         entity = this.uploadFileImg(dto, entity);
         entity = courseRepository.save(entity);
         return new CourseDto(entity);
     }
-
     // upload file img
     private Course uploadFileImg(CourseDto dto, Course entity) throws IOException {
         if (dto.getImageFile() != null) {
@@ -82,10 +71,28 @@ public class CourseServiceImpl implements CourseService {
         result = result.replaceAll("\\s+", "");
         return result;
     }
+    @Override
+    public CourseDto saveCourse(CourseDto dto) throws IOException {
+        Course course = new Course();
+        return this.save(course, dto);
+    }
 
     @Override
-    public void deleteCourse(Long id) {
-        courseRepository.deleteById(id);
+    public CourseDto upDateCourse(CourseDto dto, Long id) throws CustomException, IOException {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new CustomException("Course not found"));
+        return this.save(course, dto);
+    }
+
+
+    @Override
+    public void deleteCourse(Long id) throws CustomException {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new CustomException("Course not found") );
+        if(course.getVoided() == null || course.getVoided() == false){
+            course.setVoided(true);
+        }else {
+            course.setVoided(false);
+        }
+        courseRepository.save(course);
     }
 
     @Override

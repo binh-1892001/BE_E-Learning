@@ -37,21 +37,21 @@ public class UserController {
     }
 
     @Secured({"ROLE_ADMIN","ROLE_SUBADMIN","ROLE_USER"})
-    @PostMapping("/edit-info-user")
+    @PutMapping ("/edit-info-user")
     public ResponseEntity<String>editInfoUser(@RequestBody @Valid EditUserRequest editUserRequest){
         userService.editInfoUser(editUserRequest);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @Secured({"ROLE_ADMIN","ROLE_SUBADMIN","ROLE_USER"})
-    @PostMapping("/change-password")
+    @PutMapping("/change-password")
     public ResponseEntity<String> changePass(@RequestBody @Valid ChangePasswordRequest request) throws CustomException {
         userService.changePassword(request);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @Secured("ROLE_ADMIN")
-    @PostMapping("/admin/edit-user/{id}")
+    @PutMapping("/admin/edit-user/{id}")
     public ResponseEntity<String> adminEditUser(@RequestBody @Valid EditUserRequest editUserRequest,@PathVariable Long id) throws CustomException {
         userService.editUser(editUserRequest,id);
         return new ResponseEntity<>("Success",HttpStatus.OK);
@@ -59,7 +59,13 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/find-all")
-    ResponseEntity<Page<UserReponse>> findAllUser(@RequestParam("name") String name, @RequestParam("phone") String phone, @PageableDefault(page = 0, size = 10,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
+    ResponseEntity<Page<UserReponse>> findAllUser(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "phone", required = false) String phone, @PageableDefault(page = 0, size = 10,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
         return new ResponseEntity<>(userService.findAll(name,phone,pageable),HttpStatus.OK);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/change-status/{id}")
+    ResponseEntity<Boolean> changeStatus(@PathVariable Long id) throws CustomException {
+        return new ResponseEntity<>(userService.changeStatusActiveUser(id), HttpStatus.OK);
     }
 }

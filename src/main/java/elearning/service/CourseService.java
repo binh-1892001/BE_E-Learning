@@ -1,5 +1,6 @@
 package elearning.service;
 
+import elearning.dto.CommentDto;
 import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -11,8 +12,9 @@ import java.util.List;
 public interface CourseService {
 
     CourseDto saveCourse(CourseDto dto) throws IOException;
+    CourseDto upDateCourse(CourseDto dto, Long id) throws CustomException, IOException;
 
-    void deleteCourse(Long id);
+    void deleteCourse(Long id) throws CustomException;
 
     List<CourseDto> getAllCourse();
 

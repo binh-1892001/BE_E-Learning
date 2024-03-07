@@ -11,10 +11,12 @@ import elearning.exception.CustomException;
 import elearning.model.Roles;
 import elearning.model.Users;
 import elearning.repository.IUserRepository;
+import elearning.repository.UserClipBoardRepository;
 import elearning.security.jwt.JwtProvider;
 import elearning.security.user_principal.UserPrincipal;
 import elearning.service.IRoleService;
 import elearning.service.IUserService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -31,8 +33,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.GrantedAuthority;
 
+import javax.security.auth.login.AccountLockedException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +57,9 @@ public class UserServiceImpl implements IUserService {
     private AuthenticationProvider authenticationProvider;
     @Autowired
     private JwtProvider jwtProvider;
+
+    @Autowired
+    private UserClipBoardRepository userClipBoardRepository;
 
 //    @Override
 //    public void register(UserRegister userRegister) {
@@ -87,26 +94,30 @@ public class UserServiceImpl implements IUserService {
 //    }
 
 
-    /*Đăng ký dối với người dùng*/
+    /* Admin tạo tk sub admin*/
     @Override
     public void registerSubAdmin(UserInfoRequest request) throws CustomException {
-        if(userRepository.existsByUsername(request.getUsername())){
-            throw new CustomException("Username is registed");
+        if(userRepository.existsByPhone(request.getPhone())){
+            throw new CustomException("Phone is registed");
         }
         setInfoUser(request,Set.of(RoleName.ROLE_SUBADMIN), new Users());
     }
 
 
     @Override
+    @Transactional
     public void registerUser(UserInfoRequest userInfoRequest) throws CustomException {
-        if(userRepository.existsByUsername(userInfoRequest.getUsername())){
+        if(userRepository.existsByPhone(userInfoRequest.getPhone())){
             throw new CustomException("Username is registed");
+        }
+        if(userClipBoardRepository.existsByPhone(userInfoRequest.getPhone())){
+            userClipBoardRepository.deleteByPhone(userInfoRequest.getPhone());
         }
         setInfoUser(userInfoRequest, Set.of(RoleName.ROLE_USER),new Users());
     }
 
     private void setInfoUser(UserInfoRequest userInfoRequest, Set<RoleName> roleNames, Users users) throws CustomException {
-        BeanUtils.copyProperties(userInfoRequest, users);
+        copyPropertiesUser(userInfoRequest, users);
         users.setPassword(passwordEncoder.encode(userInfoRequest.getPassword()));
         if(roleNames !=null && !roleNames.isEmpty()){
             Set<Roles> roles = new HashSet<>();
@@ -125,14 +136,15 @@ public class UserServiceImpl implements IUserService {
     public JwtResponse login(UserLogin userLogin) throws CustomException {
         Authentication authentication;
         try {
-            authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
+            authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getPhone(), userLogin.getPassword()));
         } catch (AuthenticationException e) {
-            throw new CustomException("Username or Password is incorrect 11312321");
+            throw new CustomException("Bad credentials:" +e.getMessage());
         }
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new CustomException("user not found"));
-        String refreshToken = null;
+//        Users users = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new CustomException("user not found"));
+//        String refreshToken = null;
 //        if (users.getRefreshToken() == null || users.getRefreshToken().isEmpty()) {
 //            refreshToken = jwtProvider.generateRefreshToken(userPrincipal);
 //
@@ -148,7 +160,7 @@ public class UserServiceImpl implements IUserService {
         // thực hiện trả về cho người dùng
         return JwtResponse.builder()
                 .accessToken(jwtProvider.generateToken(userPrincipal))
-                .refreshToken(refreshToken)
+                .refreshToken(null)
                 .expired(EXPIRED)
                 .fullName(userPrincipal.getFullName())
                 .username(userPrincipal.getUsername())
@@ -169,7 +181,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void editInfoUser(EditUserRequest editUserRequest) {
         Users users = this.getCurrentUser();
-        BeanUtils.copyProperties(editUserRequest, users);
+        copyPropertiesUser(editUserRequest, users);
         userRepository.save(users);
     }
 
@@ -193,7 +205,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void editUser(EditUserRequest editUserRequest, Long id) throws CustomException {
         Users users = userRepository.findById(id).orElseThrow(()->new CustomException("User not found"));
-        BeanUtils.copyProperties(editUserRequest,users);
+        copyPropertiesUser(editUserRequest,users);
         if (editUserRequest.getRole() != null && !editUserRequest.getRole().isEmpty()) {
             Set<Roles> roles = new HashSet<>();
             editUserRequest.getRole().forEach(e -> {
@@ -220,7 +232,19 @@ public class UserServiceImpl implements IUserService {
     @Override
     public Users getCurrentUser() {
         UserPrincipal userPrincipal = (UserPrincipal) (SecurityContextHolder.getContext()).getAuthentication().getPrincipal();
-        return userRepository.findUsersByUsername(userPrincipal.getUsername()).orElseThrow(()-> new RuntimeException("User not found"));
+        return userRepository.findUsersByPhone(userPrincipal.getUsername()).orElseThrow(()-> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public boolean changeStatusActiveUser(Long id) throws CustomException {
+        Users users = userRepository.findById(id).orElseThrow(()-> new CustomException("User not found"));
+        users.setVoided(!(Objects.isNull(users.getVoided()) || users.getVoided()));
+        userRepository.save(users);
+        return users.getVoided();
+    }
+
+    private void copyPropertiesUser(Object o, Users users){
+        BeanUtils.copyProperties(o, users);
     }
 
 //    @Override

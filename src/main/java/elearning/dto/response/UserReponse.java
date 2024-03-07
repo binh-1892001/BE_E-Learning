@@ -16,10 +16,11 @@ import java.util.List;
 @Setter
 public class UserReponse extends BaseObjectDto {
 
-    private String username;
+//    private String username;
     private String fullName;
     private String phone;
     private List<String> role;
+    private Boolean voided;
 
     public UserReponse() {
     }
@@ -27,9 +28,10 @@ public class UserReponse extends BaseObjectDto {
     public UserReponse(Users users) {
         setId(users.getId());
         this.setCreateDate(users.getCreateDate());
-        this.username = users.getUsername();
+//        this.username = users.getUsername();
         this.fullName = users.getFullName();
         this.phone = users.getPhone();
+        this.voided = users.getVoided();
         role = new ArrayList<>();
         if(users.getRoles() != null){
             users.getRoles().forEach(e->role.add(e.getRoleName().name()));

@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 public class UserInfoRequest {
-    @NotBlank(message = "username not blank")
-    private String username;
+//    @NotBlank(message = "username not blank")
+//    private String username;
     @NotBlank(message = "fullName not blank")
     private String fullName;
     @NotBlank

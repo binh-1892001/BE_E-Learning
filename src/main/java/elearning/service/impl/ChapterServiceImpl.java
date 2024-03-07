@@ -1,23 +1,17 @@
 package elearning.service.impl;
 
 import elearning.dto.ChapterDto;
-import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
 import elearning.model.Chapter;
 import elearning.model.Course;
 import elearning.repository.ChapterRepository;
 import elearning.repository.CourseRepository;
 import elearning.service.ChapterService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,28 +24,16 @@ public class ChapterServiceImpl implements ChapterService {
     @Autowired
     CourseRepository courseRepository;
 
-    @PersistenceContext
-    public EntityManager manager;
+    public ChapterDto save(Chapter entity, ChapterDto dto) throws CustomException {
 
-
-    @Override
-    public ChapterDto saveChapter(ChapterDto dto) throws CustomException {
-        if (dto == null) return null;
-        Chapter entity = null;
-        if (dto.getId() != null) {
-            entity = chapterRepository.findById(dto.getId()).orElse(null);
-        }
-        if (entity == null) {
-            entity = new Chapter();
-        }
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
 
-        if(dto.getCourse() == null || dto.getCourse().getId() == null){
+        if (dto.getCourse() == null || dto.getCourse().getId() == null) {
             throw new CustomException("Course is not null");
         }
         Course course = courseRepository.findById(dto.getCourse().getId()).orElse(null);
-        if (course == null){
+        if (course == null) {
             throw new CustomException("Course is not null");
         }
         entity.setCourse(course);
@@ -60,9 +42,26 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public void deleteChapter(Long id) {
-        chapterRepository.deleteById(id);
+    public ChapterDto saveChapter(ChapterDto dto) throws CustomException {
+        Chapter entity = new Chapter();
+        return this.save(entity, dto);
+    }
 
+    @Override
+    public ChapterDto upDateChapter(ChapterDto dto, Long id) throws CustomException {
+        Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new CustomException("Chapter not found"));
+        return this.save(chapter, dto);
+    }
+
+    @Override
+    public void deleteChapter(Long id) throws CustomException {
+        Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new CustomException("Chapter not found"));
+        if(chapter.getVoided() == null || chapter.getVoided() == false){
+            chapter.setVoided(true);
+        }else {
+            chapter.setVoided(false);
+        }
+        chapterRepository.save(chapter);
     }
 
     @Override
