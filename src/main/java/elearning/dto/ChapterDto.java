@@ -14,6 +14,7 @@ public class ChapterDto extends BaseObjectDto {
     private String description;
     private CourseDto course;
     private Long courseId;
+    private String courseName;
     public ChapterDto() {
     }
     public ChapterDto(Chapter entity) {
@@ -26,6 +27,7 @@ public class ChapterDto extends BaseObjectDto {
         if(entity.getCourse() != null){
 //            this.course = new CourseDto(entity.getCourse());
             this.courseId = entity.getCourse().getId();
+            this.courseName = entity.getCourse().getTitle();
         }
     }
 
@@ -39,6 +41,7 @@ public class ChapterDto extends BaseObjectDto {
         if(entity.getCourse() != null){
 //            this.course = new CourseDto(entity.getCourse());
             this.courseId = entity.getCourse().getId();
+            this.courseName = entity.getCourse().getTitle();
         }
 
         if (isGetFull) {
