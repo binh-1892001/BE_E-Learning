@@ -89,4 +89,9 @@ public class ChapterServiceImpl implements ChapterService {
         return page;
     }
 
+    @Override
+    public List<ChapterDto> getChaptersByCourseId(Long courseId) {
+        return chapterRepository.getChaptersByCourseId(courseId);
+    }
+
 }
