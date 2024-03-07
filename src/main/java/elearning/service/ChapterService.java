@@ -20,4 +20,5 @@ public interface ChapterService {
 
     Page<ChapterDto> pagingChapterDto(Pageable pageable, String title);
 
+    List<ChapterDto> getChaptersByCourseId(Long courseId);
 }

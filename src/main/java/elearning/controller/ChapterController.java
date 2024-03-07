@@ -54,5 +54,9 @@ public class ChapterController {
         ChapterDto ret = chapterService.getChapterDtoById(id);
         return ResponseEntity.ok(ret);
     }
-
+    @GetMapping("/get-chapters-by-course/{courseId}")
+    public ResponseEntity<List<ChapterDto>> getChaptersByCourseId(@PathVariable("courseId") Long courseId) {
+        List<ChapterDto> ret = chapterService.getChaptersByCourseId(courseId);
+        return ResponseEntity.ok(ret);
+    }
 }

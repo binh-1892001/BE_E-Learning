@@ -19,4 +19,8 @@ public interface ChapterRepository extends JpaRepository<Chapter,Long> {
     @Query("select new elearning.dto.ChapterDto(e, true) from Chapter e"
             + " Where ( :title is null or  e.title like concat('%',:title,'%'))")
     Page<ChapterDto> getChapterPage(Pageable pageable, String title);
+
+    @Query("select new elearning.dto.ChapterDto(e, true) from Chapter e"
+            + " Where ( e.course.id = :courseId )")
+    List<ChapterDto> getChaptersByCourseId(Long courseId);
 }
