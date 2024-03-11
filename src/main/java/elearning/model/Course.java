@@ -1,10 +1,7 @@
 package elearning.model;
 
 import elearning.model.base.BaseObject;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
@@ -19,6 +16,8 @@ import java.util.Set;
 public class Course extends BaseObject {
 	private String title;
 	private String image;
+
+	@Column(columnDefinition="LONGTEXT")
 	private String description;
 	private String subDescription;
 
