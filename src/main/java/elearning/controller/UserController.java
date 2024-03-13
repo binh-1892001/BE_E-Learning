@@ -30,6 +30,12 @@ public class UserController {
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/create-user")
+    public ResponseEntity<String> createUser(@RequestBody @Valid UserInfoRequest userInfoRequest) throws CustomException {
+        userService.createUser(userInfoRequest);
+        return new ResponseEntity<>("Success", HttpStatus.CREATED);
+    }
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserInfoRequest userInfoRequest) throws CustomException {
         userService.registerUser(userInfoRequest);

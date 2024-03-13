@@ -1,11 +1,12 @@
 package elearning.dto.request;
 
+import elearning.constant.RoleName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,5 +20,5 @@ public class UserInfoRequest {
     private String phone;
     @NotBlank(message = "password not blank")
     private String password;
-    private List<String> role;
+    private Set<RoleName> role;
 }

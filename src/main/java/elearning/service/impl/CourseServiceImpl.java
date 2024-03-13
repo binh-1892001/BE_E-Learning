@@ -2,21 +2,14 @@ package elearning.service.impl;
 
 import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
-import elearning.model.Comment;
 import elearning.model.Course;
 import elearning.repository.CourseRepository;
 import elearning.service.CourseService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,6 +31,7 @@ public class CourseServiceImpl implements CourseService {
     private String filePath;
 
     public CourseDto save(Course entity, CourseDto dto) throws IOException {
+        entity.setVoided(dto.isVoided());
         entity.setTitle(dto.getTitle());
         entity.setDescription(dto.getDescription());
         entity.setSubDescription(dto.getSubDescription());
@@ -114,8 +108,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<CourseDto> pagingCourseDto(Pageable pageable, String title) {
-        Page<CourseDto> page = courseRepository.getCoursePage(pageable, title);
+    public Page<CourseDto> pagingCourseDto(Pageable pageable, String title,String home) {
+        Page<CourseDto> page = courseRepository.getCoursePage(pageable, title, home);
         return page;
     }
 
