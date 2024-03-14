@@ -1,6 +1,7 @@
 package elearning.model;
 
 import elearning.model.base.BaseObject;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,6 +17,7 @@ public class Lesson extends BaseObject {
 	private String title;
 	private String video;
 	private String resources;
+	@Column(columnDefinition="LONGTEXT")
 	private String description;
 	private String document;
 	@ManyToOne
