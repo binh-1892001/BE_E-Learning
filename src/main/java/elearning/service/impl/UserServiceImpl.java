@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -240,8 +239,13 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean changeStatusActiveUser(Long id) throws CustomException {
         Users users = userRepository.findById(id).orElseThrow(()-> new CustomException("User not found"));
-        users.setVoided(!(Objects.nonNull(users.getVoided()) || users.getVoided()));
-        userRepository.save(users);
+        if(users.getVoided() == null){
+            users.setVoided(true);
+        }
+        else {
+            users.setVoided(!users.getVoided());
+        }
+        users = userRepository.save(users);
         return users.getVoided();
     }
 

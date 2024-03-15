@@ -2,14 +2,11 @@ package elearning.security.user_principal;
 
 import elearning.model.Users;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Objects;
 
 @Data
 public class UserPrincipal implements UserDetails {
@@ -25,7 +22,12 @@ public class UserPrincipal implements UserDetails {
         this.fullName =user.getFullName();
         this.username= user.getPhone();
         this.password =user.getPassword();
-        this.voided = Objects.isNull(user.getVoided()) || user.getVoided();
+        if(user.getVoided() == null){
+            this.voided = false;
+        }
+        else {
+            this.voided = user.getVoided();
+        }
         this.authorities = user.getRoles().stream().map(item->new SimpleGrantedAuthority(item.getRoleName().toString())).toList();}
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -49,7 +51,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return voided;
+        return !voided;
     }
 
     @Override
@@ -59,7 +61,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return voided;
+        return !voided;
     }
 
 }

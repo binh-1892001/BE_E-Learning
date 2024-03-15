@@ -17,4 +17,5 @@ public class EditUserRequest {
     private String phone;
     private String password;
     private List<String> role;
+    private Boolean voided;
 }
