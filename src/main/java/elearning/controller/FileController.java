@@ -1,6 +1,7 @@
 package elearning.controller;
 
 import elearning.service.IFileService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,13 @@ public class FileController {
     @Autowired
     private IFileService fileService;
 
+    @Operation(summary = "Upload one file to server")
     @PostMapping("/upload-file")
     ResponseEntity<String> uploadFile(@ModelAttribute MultipartFile file) throws IOException {
         return new ResponseEntity<>(fileService.uploadFile(file), HttpStatus.OK);
     }
 
+    @Operation(summary = "Upload multiple file to server")
     @PostMapping("/upload-multyFile")
     ResponseEntity<List<String>> uploadMultyFile(MultipartFile [] files) throws IOException {
         return new ResponseEntity<>(fileService.uploadMultyFile(files), HttpStatus.OK);
