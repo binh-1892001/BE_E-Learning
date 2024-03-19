@@ -16,7 +16,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<CourseDto> getAll();
 
     @Query("select new elearning.dto.CourseDto(e, true) from Course e"
-            + " Where ( :title is null or  e.title like concat('%',:title,'%'))")
-    Page<CourseDto> getCoursePage(Pageable pageable, String title);
+            + " Where ((:home is null OR (e.voided is null or e.voided = false)) AND (:title is null or  e.title like concat('%',:title,'%')))")
+    Page<CourseDto> getCoursePage(Pageable pageable, String title,String home);
 
 }

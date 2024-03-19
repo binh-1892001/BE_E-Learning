@@ -1,6 +1,5 @@
 package elearning.controller;
 
-import elearning.dto.CommentDto;
 import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
 import elearning.service.CourseService;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -53,9 +51,9 @@ public class CourseController {
     }
 
     @GetMapping("/paging")
-    public ResponseEntity<Page<CourseDto>> paging(@PageableDefault(page = 0, size = 2,sort = "id",direction = Sort.Direction.DESC) Pageable pageable
+    public ResponseEntity<Page<CourseDto>> paging(@RequestParam(required = false)String home,@PageableDefault(page = 0, size = 20,sort = "id",direction = Sort.Direction.DESC) Pageable pageable
             , @RequestParam(required = false) String title) {
-        Page<CourseDto> ret = courseService.pagingCourseDto(pageable, title);
+        Page<CourseDto> ret = courseService.pagingCourseDto(pageable, title, home);
         return ResponseEntity.ok(ret);
     }
 

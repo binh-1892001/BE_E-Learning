@@ -30,6 +30,12 @@ public class UserController {
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/create-user")
+    public ResponseEntity<String> createUser(@RequestBody @Valid UserInfoRequest userInfoRequest) throws CustomException {
+        userService.createUser(userInfoRequest);
+        return new ResponseEntity<>("Success", HttpStatus.CREATED);
+    }
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserInfoRequest userInfoRequest) throws CustomException {
         userService.registerUser(userInfoRequest);
@@ -59,7 +65,7 @@ public class UserController {
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/page")
-    ResponseEntity<Page<UserReponse>> findAllUser(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "phone", required = false) String phone, @PageableDefault(page = 0, size = 10,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
+    ResponseEntity<Page<UserReponse>> findAllUser(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "phone", required = false) String phone, @PageableDefault(page = 0, size = 1000,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
         return new ResponseEntity<>(userService.findAll(name,phone,pageable),HttpStatus.OK);
     }
 

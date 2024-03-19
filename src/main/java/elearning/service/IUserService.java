@@ -2,8 +2,8 @@ package elearning.service;
 
 import elearning.dto.request.ChangePasswordRequest;
 import elearning.dto.request.EditUserRequest;
-import elearning.dto.request.UserLogin;
 import elearning.dto.request.UserInfoRequest;
+import elearning.dto.request.UserLogin;
 import elearning.dto.response.JwtResponse;
 import elearning.dto.response.UserReponse;
 import elearning.exception.CustomException;
@@ -38,4 +38,5 @@ public interface IUserService {
 
     boolean changeStatusActiveUser(Long id) throws CustomException;
 
+    UserReponse createUser(UserInfoRequest request) throws CustomException;
 }

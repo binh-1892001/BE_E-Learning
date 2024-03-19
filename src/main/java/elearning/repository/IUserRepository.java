@@ -14,7 +14,7 @@ public interface IUserRepository extends JpaRepository<Users,Long> {
 
     boolean existsByPhone(String phone);
 
-    @Query("select  u from Users u WHERE (LOWER(u.fullName) LIKE LOWER(CONCAT('%', :name, '%')) OR :name = '' ) AND (u.phone = :phone OR :phone = '')")
+    @Query("select  u from Users u WHERE (LOWER(u.fullName) LIKE LOWER(CONCAT('%', :name, '%')) OR :name = '' OR :name is null ) AND (u.phone = :phone OR :phone = '' or :phone is null)")
     Page<Users> findUsersByFullNameAndPhone(String name, String phone, Pageable pageble);
 
     @Query("select u.favourite from Users u where u.id = :userId")

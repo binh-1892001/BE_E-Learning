@@ -1,6 +1,5 @@
 package elearning.service;
 
-import elearning.dto.CommentDto;
 import elearning.dto.CourseDto;
 import elearning.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -20,6 +19,8 @@ public interface CourseService {
 
     CourseDto getCourseDtoById(Long id) throws CustomException;
 
-    Page<CourseDto> pagingCourseDto(Pageable pageable, String title);
+    Page<CourseDto> pagingCourseDto(Pageable pageable, String title,String home);
+
+
 
 }

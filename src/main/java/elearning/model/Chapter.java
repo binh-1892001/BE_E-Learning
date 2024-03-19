@@ -15,6 +15,7 @@ import java.util.Set;
 @Builder
 public class Chapter extends BaseObject {
 	private String title;
+	@Column(columnDefinition = "LONGTEXT")
 	private String description;
 	@ManyToOne
 	@JoinColumn(name = "course_id")

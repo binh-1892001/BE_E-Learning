@@ -3,8 +3,8 @@ package elearning.service.impl;
 import elearning.constant.RoleName;
 import elearning.dto.request.ChangePasswordRequest;
 import elearning.dto.request.EditUserRequest;
-import elearning.dto.request.UserLogin;
 import elearning.dto.request.UserInfoRequest;
+import elearning.dto.request.UserLogin;
 import elearning.dto.response.JwtResponse;
 import elearning.dto.response.UserReponse;
 import elearning.exception.CustomException;
@@ -20,6 +20,8 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,15 +30,13 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.GrantedAuthority;
 
-import javax.security.auth.login.AccountLockedException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -194,27 +194,28 @@ public class UserServiceImpl implements IUserService {
         users.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
         userRepository.save(users);
     }
-
-    /**
-     *
-     * @param editUserRequest
-     * @param id
-     */
-
     /*Admin*/
     @Override
     public void editUser(EditUserRequest editUserRequest, Long id) throws CustomException {
         Users users = userRepository.findById(id).orElseThrow(()->new CustomException("User not found"));
+        if(!users.getPhone().equals(editUserRequest.getPhone())){
+            if(userRepository.existsByPhone(editUserRequest.getPhone())){
+                throw new CustomException("Phone is register");
+            }
+        }
         copyPropertiesUser(editUserRequest,users);
+        if(editUserRequest.getPassword() != null && !editUserRequest.getPassword().isEmpty()){
+            users.setPassword(passwordEncoder.encode(editUserRequest.getPassword()));
+        }
         if (editUserRequest.getRole() != null && !editUserRequest.getRole().isEmpty()) {
             Set<Roles> roles = new HashSet<>();
             editUserRequest.getRole().forEach(e -> {
                 switch (e) {
-                    case "admin":
+                    case "ROLE_ADMIN":
                         roles.add(roleService.findByRoleName(RoleName.ROLE_ADMIN));
-                    case "subadmin":
+                    case "ROLE_SUBADMIN":
                         roles.add(roleService.findByRoleName(RoleName.ROLE_SUBADMIN));
-                    case "user":
+                    case "ROLE_USER":
                         roles.add(roleService.findByRoleName(RoleName.ROLE_USER));
                 }
             });
@@ -238,13 +239,26 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean changeStatusActiveUser(Long id) throws CustomException {
         Users users = userRepository.findById(id).orElseThrow(()-> new CustomException("User not found"));
-        users.setVoided(!(Objects.isNull(users.getVoided()) || users.getVoided()));
-        userRepository.save(users);
+        if(users.getVoided() == null){
+            users.setVoided(true);
+        }
+        else {
+            users.setVoided(!users.getVoided());
+        }
+        users = userRepository.save(users);
         return users.getVoided();
     }
 
+    @Override
+    public UserReponse createUser(UserInfoRequest request) throws CustomException {
+        Users users = new Users();
+        setInfoUser(request, request.getRole(), users);
+        userRepository.save(users);
+        return new UserReponse(users);
+    }
+
     private void copyPropertiesUser(Object o, Users users){
-        BeanUtils.copyProperties(o, users);
+        BeanUtils.copyProperties(o, users,getNullPropertyNames(o));
     }
 
 //    @Override
@@ -271,5 +285,17 @@ public class UserServiceImpl implements IUserService {
 //            throw new RuntimeException("Un Authentication");
 //        }
 //    }
+    public static String[] getNullPropertyNames (Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
+        Set<String> emptyNames = new HashSet<String>();
+        for(java.beans.PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) emptyNames.add(pd.getName());
+        }
+
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
+    }
 }
