@@ -52,7 +52,8 @@ public class SercurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests((auth) ->
-                        auth.requestMatchers("/auth/**","/public/**","/api/v1/user/register","/api/v1/user-clipboard","/img/**", "/api/v1/course/paging").permitAll()
+                        auth.requestMatchers("/auth/**","/public/**","/api/v1/user/register","/api/v1/user-clipboard","/img/**", "/api/v1/course/paging","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/configuration/ui",
+                                        "/configuration/security","/swagger-ui.html").permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling((auth) ->
                         auth.authenticationEntryPoint(jwtEntryPoint)

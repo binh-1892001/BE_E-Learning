@@ -6,6 +6,8 @@ import elearning.dto.request.UserInfoRequest;
 import elearning.dto.response.UserReponse;
 import elearning.exception.CustomException;
 import elearning.service.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +21,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
+
 public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Operation(summary = "Create subAdmin for Admin")
+    @ApiResponse
     @Secured("ROLE_ADMIN")
     @PostMapping("/register/sub-admin")
     public ResponseEntity<String> registerSubAdmin(@RequestBody @Valid UserInfoRequest userInfoRequest) throws CustomException {
@@ -30,18 +35,22 @@ public class UserController {
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Create User for Admin")
     @Secured("ROLE_ADMIN")
     @PostMapping("/create-user")
     public ResponseEntity<String> createUser(@RequestBody @Valid UserInfoRequest userInfoRequest) throws CustomException {
         userService.createUser(userInfoRequest);
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
+
+    @Operation(summary = "User register")
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserInfoRequest userInfoRequest) throws CustomException {
         userService.registerUser(userInfoRequest);
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
+    @Operation(summary = "User edit info")
     @Secured({"ROLE_ADMIN","ROLE_SUBADMIN","ROLE_USER"})
     @PutMapping ("/edit-info-user")
     public ResponseEntity<String>editInfoUser(@RequestBody @Valid EditUserRequest editUserRequest){
@@ -49,6 +58,7 @@ public class UserController {
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
+    @Operation(summary = "User change password")
     @Secured({"ROLE_ADMIN","ROLE_SUBADMIN","ROLE_USER"})
     @PutMapping("/change-password")
     public ResponseEntity<String> changePass(@RequestBody @Valid ChangePasswordRequest request) throws CustomException {
@@ -56,6 +66,7 @@ public class UserController {
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
+    @Operation(summary = "Edit info user for Admin")
     @Secured("ROLE_ADMIN")
     @PutMapping("/admin/edit-user/{id}")
     public ResponseEntity<String> adminEditUser(@RequestBody @Valid EditUserRequest editUserRequest,@PathVariable Long id) throws CustomException {
@@ -63,12 +74,14 @@ public class UserController {
         return new ResponseEntity<>("Success",HttpStatus.OK);
     }
 
+    @Operation(summary = "Paging user for Admin")
     @Secured("ROLE_ADMIN")
     @GetMapping("/page")
     ResponseEntity<Page<UserReponse>> findAllUser(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "phone", required = false) String phone, @PageableDefault(page = 0, size = 1000,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
         return new ResponseEntity<>(userService.findAll(name,phone,pageable),HttpStatus.OK);
     }
 
+    @Operation(summary = "Lock or unlock user for admin")
     @Secured("ROLE_ADMIN")
     @GetMapping("/change-status/{id}")
     ResponseEntity<Boolean> changeStatus(@PathVariable Long id) throws CustomException {
